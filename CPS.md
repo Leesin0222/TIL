@@ -1,6 +1,6 @@
 # 행복한 CPS (ContinuationPassingStyle) 이야기
 
-직역하자면 **Continuation Passing Style == 연속 전달 스타일**이라고 할 수 있다. suspend를 구현할 때 필수로 필요한 것이 suspend 내부에서 cps가 어떻게 suspend를 실행시키는가인데 이것을 어떻게 구현할 수 있을까.. 바로 cps이다. suspend 어떻게 작동되는지 cps를 통해 알아보자.
+직역하자면 **Continuation Passing Style == 연속 전달 스타일**이라고 할 수 있다. suspend를 구현할 때 필수로 필요한 것이 suspend 내부에서 cps가 어떻게 suspend를 실행시키는가인데 이것을 어떻게 구현할 수 있을까.. 바로 cps이다. suspend가 어떻게 작동되는지 cps를 통해 알아보자.
 
 <br/>
 
@@ -10,7 +10,7 @@
 
 <br/>
 
-그럼 Coroutine이 이러한 일명, ****맛있는 코드**를 작성할 수 있는 이유가 무엇일까? 바로바로 **suspend** 키워드를 보면 알 수 있는데 suspend는 **내부적으로 콜백을 생성**하고 suspned 키워드를 읽어들인 kotlin의 컴파일러는 suspend와 resume을 위한 콜백 코드를 만들어준다. 한 번 그 속 안을 보러 가보자.
+그럼 Coroutine이 이러한 일명, **맛있는 코드**를 작성할 수 있는 이유가 무엇일까? 바로바로 **suspend** 키워드를 보면 알 수 있는데 suspend는 **내부적으로 콜백을 생성**하고 suspned 키워드를 읽어들인 kotlin의 컴파일러는 suspend와 resume을 위한 콜백 코드를 만들어준다. 한 번 그 속 안을 보러 가보자.
 
 <br/>
 
@@ -68,14 +68,14 @@ Continuation은 kotlin 컴파일러가 suspend 함수의 시그니처를 변경�
 
 2. 이 객체는 suspend 함수 계산의 결과를 호출한 Coroutine에 전달하는데 사용된다.
 
-3. 또한 함수의 리턴 타입 또한 androidApp에서 Unit으로 변경되었는데, 결과는 resume 함수의 매개변수를 통해 얻을 수 있게 된
+3. 또한 함수의 리턴 타입 또한 androidApp에서 Unit으로 변경되었는데, 결과는 resume 함수의 매개변수를 통해 얻을 수 있게 된다.
 
    <br/>
 
 Let’s Code!
 
 ```kotlin
-suspend fun getAndroidApp(api: AndroidApi): AndroidApp {
+suspend fun getAndroidApp(api: AndroidApi): AndroidApplication {
         val sellerApp = api.fetchSeller()
         val guestApp = api.fetchGuest(sellerApp)
         val masterWeb = api.fetchMaster(guestWeb)
@@ -94,7 +94,7 @@ fun getAndroidApp(api: AndroidApi, completion: Continuation<Any?>) {
         val masterWeb = api.fetchMaster(guestWeb)
         val androidApplication = api.fetchAndroidApp(masterWeb)
         Log.d("드디어 안드로이드 앱을 손에 넣었다!")
-        completion.resume(androidApllication)
+        completion.resume(AndroidApplication)
 }
 ```
 
@@ -175,7 +175,7 @@ fun getAndroidApp(api: AndroidApi, completion: Continuation<Any?>) {
 
 ```kotlin
 fun getAndroid(api: AndroidApi, completion: Continuation<Any?>) {
-        val continuation = completion as? GetAndroidStateMachine ?: GetAndroidStateMashine
+        val continuation = completion as? GetAndroidAppStateMachine ?: GetAndroidAppStateMachine
         (completion)
 
         when (continuation.label) {
